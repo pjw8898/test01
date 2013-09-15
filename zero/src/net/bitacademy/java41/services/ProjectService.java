@@ -90,22 +90,7 @@ public class ProjectService {
 		}
 	}
 	
-	public int getProjectDelete2(int no) throws Exception {
-		Connection con = dbPool.getConnection();
-		con.setAutoCommit(false);
-		try {
-			int j = projectDao.remove2(no, con);
-			con.commit();
-			return j;
-		} catch (Exception e) {
-			con.rollback();
-			throw e;
-			
-		} finally {
-			con.setAutoCommit(true);
-			dbPool.returnConnection(con);
-		}
-	}
+	
 }
 
 

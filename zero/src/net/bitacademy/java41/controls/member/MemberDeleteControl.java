@@ -23,8 +23,6 @@ public class MemberDeleteControl implements PageControl {
 		String email = params.get("email")[0];
 		
 		model.put("remove", memberService.getMemberDelete(email));
-		
-
 
 		return "/member/delete.jsp";
 

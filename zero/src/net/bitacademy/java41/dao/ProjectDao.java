@@ -262,6 +262,12 @@ public class ProjectDao {
 		
 		try {
 			con = conPool.getConnection();
+			stmt = con.prepareStatement("set FOREIGN_KEY_CHECKS=0; "); 
+			stmt = con.prepareStatement("delete from SPMS_PRJMEMB where PNO=? "); 
+			stmt.setInt(1, no);
+			stmt.executeUpdate();
+			stmt.close();
+			
 			stmt = con.prepareStatement(
 				  " delete from SPMS_PRJS "
 					+ " where PNO=?"	);
@@ -280,28 +286,5 @@ public class ProjectDao {
 			}
 		}
 	}
-	public int remove2(int no, Connection transactionConnection) throws Exception {
-		Connection con = transactionConnection;
-		PreparedStatement stmt = null;
-		
-		try {
-			con = conPool.getConnection();
-			stmt = con.prepareStatement(
-					"delete from SPMS_PRJS where PNO=? "
-					);
-			stmt.setInt(1, no);
-		
-			
-			return stmt.executeUpdate();
-			
-		} catch (Exception e) {
-			throw e;
-			
-		} finally {
-			try {stmt.close();} catch(Exception e) {}
-			if (con != null && con.getAutoCommit()) {
-				conPool.returnConnection(con);
-			}
-		}
-	}
+	
 }
