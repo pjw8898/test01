@@ -43,7 +43,7 @@
 <a href="list.do">[목록]</a>
 <a href="passwordChange.do?email=${memberInfo.email}">[암호변경]</a>
 <a href="updateMyInfo.do?email=${memberInfo.email}">[변경]</a>
-<a href="delete.do?email=${memberInfo.email}">[삭제]</a>
+<c:if test="${ member.level == 1 }"><a href="delete.do?email=${memberInfo.email}">[삭제]</a></c:if>
 </p>
 </div>
 

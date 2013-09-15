@@ -1,114 +1,123 @@
 package net.bitacademy.java41.listeners;
 
+import java.io.FileReader;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Properties;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import net.bitacademy.java41.controls.LoginControl;
-import net.bitacademy.java41.controls.LoginFormControl;
-import net.bitacademy.java41.controls.LogoutControl;
-import net.bitacademy.java41.controls.MainControl;
-import net.bitacademy.java41.controls.SigninControl;
-import net.bitacademy.java41.controls.SigninFormControl;
-import net.bitacademy.java41.controls.member.MemberAddControl;
-import net.bitacademy.java41.controls.member.MemberDeleteControl;
-import net.bitacademy.java41.controls.member.MemberListControl;
-import net.bitacademy.java41.controls.member.MemberViewControl;
-import net.bitacademy.java41.controls.member.PasswordChangeControl;
-import net.bitacademy.java41.controls.member.UpdateMemberGetControl;
-import net.bitacademy.java41.controls.member.UpdateMemberPostControl;
-import net.bitacademy.java41.controls.member.UpdateMyInfoGetControl;
-import net.bitacademy.java41.controls.member.UpdateMyInfoPostControl;
-import net.bitacademy.java41.controls.project.ProjectAddControl;
-import net.bitacademy.java41.controls.project.ProjectAddFormControl;
-import net.bitacademy.java41.controls.project.ProjectDeleteControl;
-import net.bitacademy.java41.controls.project.ProjectListControl;
-import net.bitacademy.java41.controls.project.ProjectViewControl;
-import net.bitacademy.java41.controls.project.UpdateProjectGetControl;
-import net.bitacademy.java41.controls.project.UpdateProjectPostControl;
-import net.bitacademy.java41.dao.MemberDao;
-import net.bitacademy.java41.dao.ProjectDao;
-import net.bitacademy.java41.services.AuthService;
-import net.bitacademy.java41.services.MemberService;
-import net.bitacademy.java41.services.ProjectService;
-import net.bitacademy.java41.util.DBConnectionPool;
-
 public class ContextLoaderListener implements ServletContextListener {
-
+	ServletContext ctx;
+	Hashtable<String,Object> objTable = new Hashtable<String,Object>();
+	
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		ServletContext ctx = event.getServletContext();
-		
-		DBConnectionPool dbpool = new DBConnectionPool(
-				ctx.getInitParameter("dburl"), 
-				ctx.getInitParameter("user"), 
-				ctx.getInitParameter("password"),
-				ctx.getInitParameter("driverClass"));
-		MemberDao memberDao = new MemberDao(dbpool);
-		ProjectDao projectDao = new ProjectDao(dbpool);
-		
-		AuthService authService = new AuthService().setMemberDao(memberDao);
-		MemberService memberService = 
-				new MemberService().setMemberDao(memberDao);
-		ProjectService projectService = 
-				new ProjectService()
-						.setDBConnectionPool(dbpool)
-						.setProjectDao(projectDao);
-		
+		ctx = event.getServletContext();
 		ctx.setAttribute("rootPath", ctx.getContextPath());
-
-		ctx.setAttribute("memberDao", memberDao);
-		ctx.setAttribute("projectDao", projectDao);
 		
-		ctx.setAttribute("memberService", memberService);
-		ctx.setAttribute("projectService", projectService);
-		
-		ctx.setAttribute("/auth/loginForm.do", new LoginFormControl());
-		ctx.setAttribute("/auth/login.do", 
-				new LoginControl().setAuthService(authService));
-		ctx.setAttribute("/auth/logout.do", new LogoutControl());
-		ctx.setAttribute("/main.do", new MainControl());
-		ctx.setAttribute("/member/signinForm.do", new SigninFormControl());
-		ctx.setAttribute("/member/signin.do", 
-				new SigninControl().setMemberService(memberService) );
-		ctx.setAttribute("/project/list.do", 
-				new ProjectListControl().setProjectService(projectService));
-		ctx.setAttribute("/project/view.do", 
-				new ProjectViewControl().setProjectService(projectService));
-		ctx.setAttribute("/project/addForm.do", new ProjectAddFormControl());
-		ctx.setAttribute("/project/add.do", 
-				new ProjectAddControl().setProjectService(projectService));
-		ctx.setAttribute("/member/list.do", 
-				new MemberListControl().setMemberService(memberService));
-		ctx.setAttribute("/member/view.do", 
-				new MemberViewControl().setMemberService(memberService));
-		ctx.setAttribute("/member/passwordChange.do", 
-				new PasswordChangeControl().setMemberService(memberService));	
-		ctx.setAttribute("/member/add.do", 
-				new MemberAddControl().setMemberService(memberService));
-		ctx.setAttribute("/member/updateMyInfo.do", 
-				new UpdateMyInfoGetControl().setMemberService(memberService));
-		ctx.setAttribute("/member/postupdateMyInfo.do", 
-				new UpdateMyInfoPostControl().setMemberService(memberService));
-		ctx.setAttribute("/member/updateMemberInfo.do", 
-				new UpdateMemberGetControl().setMemberService(memberService));
-		ctx.setAttribute("/member/postupdateMemberInfo.do", 
-				new UpdateMemberPostControl().setMemberService(memberService));
-		ctx.setAttribute("/project/updateProjectInfo.do", 
-				new UpdateProjectGetControl().setProjectService(projectService));
-		ctx.setAttribute("/project/postupdateProjectInfo.do", 
-				new UpdateProjectPostControl().setProjectService(projectService));
-		ctx.setAttribute("/member/delete.do",
-				new MemberDeleteControl().setMemberService(memberService));
-		ctx.setAttribute("/project/delete.do",
-				new ProjectDeleteControl().setProjectService(projectService));
+		try {
+			prepareObjects(
+					ctx.getRealPath("/WEB-INF/context.properties"));
+			prepareDependancy();
+			saveToContext();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
+	private void saveToContext() {
+		Enumeration<String> keyList = objTable.keys();
+		String key = null;
+		while(keyList.hasMoreElements()) {
+			key = keyList.nextElement();
+			ctx.setAttribute(key, objTable.get(key));
+		}
+	}
+
+	private void prepareDependancy() throws Exception {
+		Collection<Object> objList = objTable.values();
+		for(Object obj : objList) {
+			if (obj.getClass() != java.lang.String.class) {
+				injectDependancy(obj);
+			}
+		}
+	}
+
+	private void injectDependancy(Object obj) throws Exception {
+		System.out.println(obj.getClass().getName() + "---------");
+		Method[] methodList = obj.getClass().getMethods();
+		for (Method m : methodList) {
+			callSetter(obj, m);
+		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private void callSetter(Object instance, Method method) throws Exception {
+		Class paramClass = null;
+		Object paramObject = null;
+		if (method.getName().startsWith("set")) {
+			paramClass = method.getParameterTypes()[0];
+			if (paramClass == java.lang.String.class) {
+				String propertyName = extractPropertyName(method.getName());
+				method.invoke(instance, objTable.get(propertyName));
+			} else {
+				paramObject = findInstanceByClass(paramClass);
+				method.invoke(instance, paramObject);
+			}
+			System.out.println("......" + method.getName());
+		}
+	}
+
+	private String extractPropertyName(String methodName) {
+		return methodName.substring(3, 4).toLowerCase()
+				+ methodName.substring(4);
+	}
+
+	@SuppressWarnings("rawtypes")
+	private Object findInstanceByClass(Class paramClass) {
+		Collection<Object> instanceList = objTable.values();
+		for(Object obj : instanceList) {
+			if (obj.getClass() == paramClass) {
+				return obj;
+			}
+		}
+		return null;
+	}
+
+	@SuppressWarnings("rawtypes")
+	private void prepareObjects(String filePath) throws Exception {
+		Properties props = new Properties();
+		props.load( new FileReader(filePath));
+		
+		Enumeration enums = props.keys();
+		String key = null;
+		String value = null;
+		Class clazz = null;
+		while(enums.hasMoreElements()) {
+			key = (String)enums.nextElement();
+			value = ((String)props.get(key)).trim(); 
+			if (value.charAt(0) == '"') {
+				objTable.put(key, value.substring(1, value.length()-1)); 
+			} else {
+				clazz = Class.forName(value);
+				objTable.put(key, clazz.newInstance());
+			} 
+		}
+		
+	}
+
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
 		
 	}
 }
+
 
 
 

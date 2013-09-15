@@ -15,6 +15,15 @@ import net.bitacademy.java41.vo.Project;
 public class ProjectDao {
 	DBConnectionPool conPool;
 	
+	public ProjectDao(){
+		
+	}
+	
+	public ProjectDao setDBConnectionPool(DBConnectionPool conPool){
+		this.conPool = conPool;
+		return this;
+	}
+	
 	public ProjectDao(DBConnectionPool conPool) {
 		this.conPool = conPool;
 	}
@@ -172,11 +181,14 @@ public class ProjectDao {
 			try {rs.close();} catch(Exception e) {}
 			try {projectStmt.close();} catch(Exception e) {}
 			try {projectMemberStmt.close();} catch(Exception e) {}
+			if (con != null && con.getAutoCommit()) {
+				conPool.returnConnection(con);
+			} 
 		}
 	}
 	
-	public int change(Project project) throws Exception {
-		Connection con = null;
+	public int change(Project project, Connection transactionConnection) throws Exception {
+		Connection con = transactionConnection;
 		PreparedStatement stmt = null;
 		
 		try {
@@ -199,7 +211,7 @@ public class ProjectDao {
 		
 		} finally {
 			try {stmt.close();} catch(Exception e) {}
-			if (con != null) {
+			if (con != null && con.getAutoCommit()) {
 				conPool.returnConnection(con);
 			}
 		}
@@ -244,8 +256,8 @@ public class ProjectDao {
 			}
 		} 
 	}		
-	public int remove(int no) throws Exception {
-		Connection con = null;
+	public int remove(int no, Connection transactionConnection) throws Exception {
+		Connection con = transactionConnection;
 		PreparedStatement stmt = null;
 		
 		try {
@@ -263,13 +275,13 @@ public class ProjectDao {
 			
 		} finally {
 			try {stmt.close();} catch(Exception e) {}
-			if (con != null) {
+			if (con != null && con.getAutoCommit()) {
 				conPool.returnConnection(con);
 			}
 		}
 	}
-	public int remove2(int no) throws Exception {
-		Connection con = null;
+	public int remove2(int no, Connection transactionConnection) throws Exception {
+		Connection con = transactionConnection;
 		PreparedStatement stmt = null;
 		
 		try {
@@ -287,7 +299,7 @@ public class ProjectDao {
 			
 		} finally {
 			try {stmt.close();} catch(Exception e) {}
-			if (con != null) {
+			if (con != null && con.getAutoCommit()) {
 				conPool.returnConnection(con);
 			}
 		}

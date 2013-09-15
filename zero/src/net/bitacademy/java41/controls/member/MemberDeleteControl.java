@@ -12,12 +12,16 @@ public class MemberDeleteControl implements PageControl {
 		this.memberService = memberService;
 		return this;
 	}
+	
 	@Override
 	public String execute(Map<String, Object> model) throws Exception {
 		@SuppressWarnings("unchecked")
+		
 		Map<String,String[]> params = 
-		(Map<String,String[]>)model.get("params");
+						(Map<String,String[]>)model.get("params");
+		
 		String email = params.get("email")[0];
+		
 		model.put("remove", memberService.getMemberDelete(email));
 		
 

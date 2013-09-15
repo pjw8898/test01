@@ -13,6 +13,15 @@ import net.bitacademy.java41.vo.Member;
 public class MemberDao {
 	DBConnectionPool conPool;
 	
+	public MemberDao(){
+		
+	}
+	
+	public MemberDao setDBConnectionPool(DBConnectionPool conPool){
+		this.conPool = conPool;
+		return this;
+	}
+	
 	public MemberDao(DBConnectionPool conPool) {
 		this.conPool = conPool;
 	}
@@ -55,17 +64,17 @@ public class MemberDao {
 		}		
 	}
 	
-	public int add(Member member) throws Exception {
-		Connection con = null;
+	public int add(Member member, Connection transactionConnection) throws Exception {
+		Connection con = transactionConnection;
 		PreparedStatement stmt = null;
-
+		
 		try {
 			con = conPool.getConnection();
 			stmt = con.prepareStatement(
-					"insert into SPMS_MEMBS("
-							+ " EMAIL,MNAME,PWD,TEL,"
-							+ " BLOG,REG_DATE,UPDATE_DATE,DET_ADDR,TAG,LEVEL)"
-							+ " values(?,?,?,?,?,now(),now(),?,?,?)");
+				"insert into SPMS_MEMBS("
+				+ " EMAIL,MNAME,PWD,TEL,"
+				+ " BLOG,REG_DATE,UPDATE_DATE,DET_ADDR,TAG,LEVEL)"
+				+ " values(?,?,?,?,?,now(),now(),?,?,?)");
 			stmt.setString(1, member.getEmail());
 			stmt.setString(2, member.getName());
 			stmt.setString(3, member.getPassword());
@@ -75,14 +84,16 @@ public class MemberDao {
 			stmt.setString(7, member.getTag());
 			stmt.setInt(8, member.getLevel());
 			return stmt.executeUpdate();
-
+			
 		} catch (Exception e) {
 			throw e;
-
+			
 		} finally {
 			try {stmt.close();} catch(Exception e) {}
+			if (con != null && con.getAutoCommit()) {
+				conPool.returnConnection(con);
+			} 
 		}
-
 	}
 	
 	public List<Member> list() throws Exception {
@@ -193,8 +204,8 @@ public class MemberDao {
 		}
 	}
 	
-	public int myInfochange(Member member) throws Exception {
-		Connection con = null;
+	public int myInfochange(Member member, Connection transactionConnection) throws Exception {
+		Connection con = transactionConnection;
 		PreparedStatement stmt = null;
 		
 		try {
@@ -217,14 +228,14 @@ public class MemberDao {
 		
 		} finally {
 			try {stmt.close();} catch(Exception e) {}
-			if (con != null) {
+			if (con != null && con.getAutoCommit()) {
 				conPool.returnConnection(con);
-			}
+			} 
 		}
 	}
 
-	public int adminChange(Member member) throws Exception {
-		Connection con = null;
+	public int adminChange(Member member, Connection transactionConnection) throws Exception {
+		Connection con = transactionConnection;
 		PreparedStatement stmt = null;
 		
 		try {
@@ -248,13 +259,13 @@ public class MemberDao {
 		
 		} finally {
 			try {stmt.close();} catch(Exception e) {}
-			if (con != null) {
+			if (con != null && con.getAutoCommit()) {
 				conPool.returnConnection(con);
 			}
 		}
 	}
-	public int remove(String email) throws Exception {
-		Connection con = null;
+	public int remove(String email, Connection transactionConnection) throws Exception {
+		Connection con = transactionConnection;
 		Statement stmt = null;
 		
 		try {
@@ -270,14 +281,14 @@ public class MemberDao {
 			
 		} finally {
 			try {stmt.close();} catch(Exception e) {}
-			if (con != null) {
+			if (con != null && con.getAutoCommit()) {
 				conPool.returnConnection(con);
-			}
+			} 
 		}
 	}
 	
-	public int remove2(String email) throws Exception {
-		Connection con = null;
+	public int remove2(String email, Connection transactionConnection) throws Exception {
+		Connection con = transactionConnection;
 		Statement stmt = null;
 		
 		try {
@@ -293,7 +304,7 @@ public class MemberDao {
 			
 		} finally {
 			try {stmt.close();} catch(Exception e) {}
-			if (con != null) {
+			if (con != null && con.getAutoCommit()) {
 				conPool.returnConnection(con);
 			}
 		}

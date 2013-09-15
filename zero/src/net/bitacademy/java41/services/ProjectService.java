@@ -37,8 +37,20 @@ public class ProjectService {
 		return projectDao.get(no);
 	}
 	
-	public int change(Project project) throws Exception {
-		return projectDao.change(project);
+	public void change(Project project) throws Exception {
+		Connection con = dbPool.getConnection();
+		con.setAutoCommit(false);
+		try {
+			projectDao.change(project, con);
+			con.commit();
+		} catch (Exception e) {
+			con.rollback();
+			throw e;
+			
+		} finally {
+			con.setAutoCommit(true);
+			dbPool.returnConnection(con);
+		}
 	}
 	
 	
@@ -61,8 +73,38 @@ public class ProjectService {
 		return projectDao.getMember(no);
 	}
 	
+	public int getProjectDelete(int no) throws Exception {
+		Connection con = dbPool.getConnection();
+		con.setAutoCommit(false);
+		try {
+			int i = projectDao.remove(no, con);
+			con.commit();
+			return i;
+		} catch (Exception e) {
+			con.rollback();
+			throw e;
+			
+		} finally {
+			con.setAutoCommit(true);
+			dbPool.returnConnection(con);
+		}
+	}
+	
 	public int getProjectDelete2(int no) throws Exception {
-		return projectDao.remove2(no);
+		Connection con = dbPool.getConnection();
+		con.setAutoCommit(false);
+		try {
+			int j = projectDao.remove2(no, con);
+			con.commit();
+			return j;
+		} catch (Exception e) {
+			con.rollback();
+			throw e;
+			
+		} finally {
+			con.setAutoCommit(true);
+			dbPool.returnConnection(con);
+		}
 	}
 }
 

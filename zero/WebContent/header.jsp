@@ -20,24 +20,7 @@
     <ul>
         <li>
             <a href="#">MEMBER<span></span></a>
-            <ul>
-                                <li>
-                    <a href="/detske-postylky"><span></span>menu1</a>
-                    <a class="hover" href="/detske-postylky"><strong><span></span>menu1</strong></a>
-                </li>
-                                <li>
-                    <a href="/zakladni-kolekce"><span></span>menu2</a>
-                    <a class="hover" href="/zakladni-kolekce"><strong><span></span>menu2</strong></a>
-                </li>
-                                <li>
-                    <a href="/prestavitelny-nabytek-combi"><span></span>menu3</a>
-                    <a class="hover" href="/prestavitelny-nabytek-combi"><strong><span></span>menu3</strong></a>
-                </li>
-                                <li>
-                    <a href="/prislusenstvi"><span></span>menu4</a>
-                    <a class="hover" href="/prislusenstvi"><strong><span></span>menu4</strong></a>
-                </li>
-                            </ul>
+            
         </li>
         <li><a href="/prodejci">PROJECT<span></span></a></li>
         <li><a href="/kontakty">FILE SHARE<span></span></a></li>
