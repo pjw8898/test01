@@ -21,6 +21,7 @@ public class ProjectViewControl implements PageControl {
 		int no = Integer.parseInt(params.get("no")[0]);
 		model.put("project", projectService.getProject(no));
 		model.put("list", projectService.getMember(no));
+		
 		return "/project/view.jsp";
 	}
 }

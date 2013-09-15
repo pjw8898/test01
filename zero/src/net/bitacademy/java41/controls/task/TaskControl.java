@@ -7,7 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import net.bitacademy.java41.controls.PageControl;
 import net.bitacademy.java41.services.TaskService;
-import net.bitacademy.java41.vo.ProjectTask;
+import net.bitacademy.java41.vo.Task;
 
 
 public class TaskControl implements PageControl {
@@ -24,15 +24,14 @@ public class TaskControl implements PageControl {
 		
 		Map<String, String[]> params = (Map<String, String[]>) model.get("params");
 		HttpSession session = (HttpSession) model.get("session");
-		ArrayList<ProjectTask> task = 
-				(ArrayList<ProjectTask>) 
-						taskService.list(Integer.parseInt(params.get("pno")[0]));
+		ArrayList<Task> task = 
+		 (ArrayList<Task>)taskService.list(Integer.parseInt(params.get("pno")[0]));
 
-	
+//			model.put("taskInfo", task);
 			session.setAttribute("list", task);
 			return "/task/task.jsp";
 		
-//		model.put("list", projectService.getTaskList(pno));
+
 
 	} 
 }

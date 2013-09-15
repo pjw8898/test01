@@ -9,16 +9,12 @@ import net.bitacademy.java41.services.ProjectService;
 
 public class UpdateProjectGetControl implements PageControl {
 	
-
 	ProjectService projectService;
-	
 
 	public UpdateProjectGetControl setProjectService(ProjectService projectService) {
 		this.projectService = projectService;
 		return this;
 	}
-
-
 
 	@SuppressWarnings("unchecked")
 	@Override

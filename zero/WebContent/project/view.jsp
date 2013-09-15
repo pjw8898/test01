@@ -58,7 +58,7 @@ ${project.content }<br>
 
 <p>
 <a href="list.do">[목록]</a>
-<a href="update.do?no=${project.no}">[변경]</a>
+<a href="updateProject.do?no=${project.no}">[변경]</a>
 <a href="delete.do?no=${project.no}">[삭제]</a>
 </p>
 </div>
