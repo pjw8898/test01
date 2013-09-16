@@ -12,12 +12,13 @@
 <link rel="stylesheet" href="${rootPath}/css/base.css">
 </head>
 <body>
-<h3>Task 업데이트가 성공했습니다.</h3>
+
 <jsp:include page="/header.jsp"></jsp:include>
 
 <jsp:include page="/sidebar.jsp"></jsp:include>
 
 <div id="content">
+<h3>Task 업데이트가 성공했습니다.</h3>
 </div>
 
 <jsp:include page="/tail.jsp"></jsp:include>

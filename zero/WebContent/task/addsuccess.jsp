@@ -16,6 +16,7 @@
 <jsp:include page="/sidebar.jsp"></jsp:include>
 
 <div id="content">
+들록완료 되었습니다!!!!
 </div>
 
 <jsp:include page="/tail.jsp"></jsp:include>
