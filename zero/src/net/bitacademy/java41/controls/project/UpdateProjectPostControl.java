@@ -4,12 +4,14 @@ package net.bitacademy.java41.controls.project;
 import java.sql.Date;
 import java.util.Map;
 
+import net.bitacademy.java41.Annotations.Component;
 import net.bitacademy.java41.controls.PageControl;
 import net.bitacademy.java41.services.MemberService;
 import net.bitacademy.java41.services.ProjectService;
 import net.bitacademy.java41.vo.Member;
 import net.bitacademy.java41.vo.Project;
 
+@Component("/project/postupdateProjectInfo.do")
 public class UpdateProjectPostControl implements PageControl {
 	
 	ProjectService projectService;

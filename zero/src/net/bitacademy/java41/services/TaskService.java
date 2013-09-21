@@ -3,12 +3,14 @@ package net.bitacademy.java41.services;
 import java.sql.Connection;
 import java.util.List;
 
+import net.bitacademy.java41.Annotations.Component;
 import net.bitacademy.java41.dao.MemberDao;
 import net.bitacademy.java41.dao.ProjectDao;
 import net.bitacademy.java41.dao.TaskDao;
 import net.bitacademy.java41.util.DBConnectionPool;
 import net.bitacademy.java41.vo.Task;
 
+@Component
 public class TaskService {
 	TaskDao taskDao;
 	ProjectDao projectDao;

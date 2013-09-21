@@ -2,9 +2,9 @@ package net.bitacademy.java41.controls;
 
 import java.util.Map;
 
-/* Page Controller
- * - 로그인 폼 처리
- */
+import net.bitacademy.java41.Annotations.Component;
+
+@Component("/auth/loginForm.do")
 public class LoginFormControl implements PageControl {
 	@Override
 	public String execute(Map<String,Object> model) throws Exception {

@@ -5,11 +5,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import net.bitacademy.java41.Annotations.Component;
 import net.bitacademy.java41.controls.PageControl;
 import net.bitacademy.java41.services.TaskService;
 import net.bitacademy.java41.vo.MemberProject;
 import net.bitacademy.java41.vo.Task;
 
+@Component("/task/taskadd.do")
 public class TaskAddPostControl  implements PageControl {
 	TaskService taskService;
 

@@ -8,12 +8,13 @@
 </head>
 <body>
 <h1>회원가입</h1>
-<form action="signin.do" method="post">
+<form action="signin.do" method="post" enctype="multipart/form-data">
 *이메일: <input type="text" name="email"><br>
 *암호: <input type="password" name="password"><br>
 암호 확인: <input type="password" name="password2"><br>
 *이름: <input type="text" name="name"><br>
 *전화: <input type="text" name="tel"><br>
+사진: <input type="file" name="photo"><br>
 블로그: <input type="text" name="blog"><br>
 우편번호: <input type="text" name="postno">
 		<input type="button" value="우편번호찾기"><br>

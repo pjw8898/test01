@@ -17,10 +17,10 @@
 
 <div id="content">
 <h1>New Task</h1>
-<form action="taskadd.do" method="post">
+<form action="taskadd.do" method="post" enctype="multipart/form-data">
 프로젝트 번호: <input type="text" name="pno" value="${param.pno}" readonly><br>
 Title: <input type="text" name="title"><br>
-UiprotoUrl:<input type="text" name="uiprotourl"><br>
+UiprotoUrl:<input type="file" name="uiprotourl"><br>
 Content:<br> 
 <textarea name="content" rows="4" cols="50"></textarea><br>
 시작일 : <input type="text" name="startdate" placeholder="예)2013-4-5"><br>

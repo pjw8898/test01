@@ -3,11 +3,12 @@ package net.bitacademy.java41.controls.member;
 
 import java.util.Map;
 
-
+import net.bitacademy.java41.Annotations.Component;
 import net.bitacademy.java41.controls.PageControl;
 import net.bitacademy.java41.services.MemberService;
 import net.bitacademy.java41.vo.Member;
 
+@Component("/member/postupdateMemberInfo.do")
 public class UpdateMemberPostControl implements PageControl {
 	
 	MemberService memberService;

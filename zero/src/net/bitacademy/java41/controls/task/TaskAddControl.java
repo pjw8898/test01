@@ -2,8 +2,10 @@ package net.bitacademy.java41.controls.task;
 
 import java.util.Map;
 
+import net.bitacademy.java41.Annotations.Component;
 import net.bitacademy.java41.controls.PageControl;
 
+@Component("/task/addform.do")
 public class TaskAddControl implements PageControl {
 
 	@Override

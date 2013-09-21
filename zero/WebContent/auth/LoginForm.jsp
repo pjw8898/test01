@@ -72,7 +72,7 @@
 								</table>
 							</form>	
 							</div>
-							<form action="../member/signin.do">
+							<form action="../member/signinForm.do">
 							
 								 <table>
 										<tr>

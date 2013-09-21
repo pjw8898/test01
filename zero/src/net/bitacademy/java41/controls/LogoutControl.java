@@ -4,6 +4,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import net.bitacademy.java41.Annotations.Component;
+
+@Component("/auth/logout.do")
 public class LogoutControl implements PageControl {
 
 	@Override

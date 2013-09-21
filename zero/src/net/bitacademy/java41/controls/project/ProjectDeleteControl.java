@@ -2,9 +2,11 @@ package net.bitacademy.java41.controls.project;
 
 import java.util.Map;
 
+import net.bitacademy.java41.Annotations.Component;
 import net.bitacademy.java41.controls.PageControl;
 import net.bitacademy.java41.services.ProjectService;
 
+@Component("/project/delete.do")
 public class ProjectDeleteControl implements PageControl{
 	ProjectService projectService;
 	

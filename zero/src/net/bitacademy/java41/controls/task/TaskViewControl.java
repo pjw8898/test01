@@ -2,9 +2,11 @@ package net.bitacademy.java41.controls.task;
 
 import java.util.Map;
 
+import net.bitacademy.java41.Annotations.Component;
 import net.bitacademy.java41.controls.PageControl;
 import net.bitacademy.java41.services.TaskService;
 
+@Component("/task/taskview.do")
 public class TaskViewControl implements PageControl {
 	TaskService taskService;
 

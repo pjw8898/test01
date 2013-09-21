@@ -7,11 +7,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.bitacademy.java41.Annotations.Component;
 import net.bitacademy.java41.util.DBConnectionPool;
 import net.bitacademy.java41.vo.MemberProject;
 import net.bitacademy.java41.vo.Project;
 import net.bitacademy.java41.vo.Task;
 
+@Component
 public class TaskDao {
 DBConnectionPool conPool;
 

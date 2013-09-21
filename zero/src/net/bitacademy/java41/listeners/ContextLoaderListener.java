@@ -6,10 +6,16 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import net.bitacademy.java41.Annotations.Component;
+
+import org.reflections.Reflections;
+
 
 public class ContextLoaderListener implements ServletContextListener {
 	ServletContext ctx;
@@ -18,11 +24,14 @@ public class ContextLoaderListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		ctx = event.getServletContext();
-		ctx.setAttribute("rootPath", ctx.getContextPath());
+		
+		objTable.put("rootPath", ctx.getContextPath());
+		objTable.put("rootRealPath", ctx.getRealPath("/"));
 		
 		try {
-			prepareObjects(
-					ctx.getRealPath("/WEB-INF/context.properties"));
+			loadProperties(
+					ctx.getRealPath("/WEB-INF/db.properties"));
+			prepareObjects();
 			prepareDependancy();
 			saveToContext();
 			
@@ -30,6 +39,7 @@ public class ContextLoaderListener implements ServletContextListener {
 			e.printStackTrace();
 		}
 	}
+	
 	
 	private void saveToContext() {
 		Enumeration<String> keyList = objTable.keys();
@@ -91,26 +101,49 @@ public class ContextLoaderListener implements ServletContextListener {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private void prepareObjects(String filePath) throws Exception {
+	private void loadProperties(String propPath) throws Exception {
 		Properties props = new Properties();
-		props.load( new FileReader(filePath));
+		props.load( new FileReader(propPath));
 		
 		Enumeration enums = props.keys();
 		String key = null;
-		String value = null;
-		Class clazz = null;
 		while(enums.hasMoreElements()) {
 			key = (String)enums.nextElement();
-			value = ((String)props.get(key)).trim(); 
-			if (value.charAt(0) == '"') {
-				objTable.put(key, value.substring(1, value.length()-1)); 
-			} else {
-				clazz = Class.forName(value);
-				objTable.put(key, clazz.newInstance());
-			} 
+			objTable.put(key, ((String)props.get(key)).trim()); 
 		}
-		
 	}
+	
+	
+	@SuppressWarnings("rawtypes")
+	private void prepareObjects() throws Exception {
+		Reflections reflector = new Reflections("net.bitacademy.java41");
+		
+		Set<Class<?>> list = reflector.getTypesAnnotatedWith(Component.class);
+		String key = null;
+		for(Class clazz : list) {
+			key = getKeyFromClass(clazz);
+			objTable.put(key, clazz.newInstance());
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private String getKeyFromClass(Class clazz) throws Exception {
+		Component compAnno = 
+				(Component)clazz.getAnnotation(Component.class);
+		if (compAnno != null) {
+			String value = compAnno.value();
+			if (value.equals("")) {
+				String className = clazz.getSimpleName(); 
+				return className.substring(0, 1).toLowerCase() 
+						+ className.substring(1);
+			} else {
+				return value;
+			}
+		} else {
+			return null;
+		}
+	}
+	
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {

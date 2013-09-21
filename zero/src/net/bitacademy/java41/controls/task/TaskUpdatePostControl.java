@@ -1,15 +1,15 @@
 package net.bitacademy.java41.controls.task;
 
 
-
-
 import java.sql.Date;
 import java.util.Map;
 
+import net.bitacademy.java41.Annotations.Component;
 import net.bitacademy.java41.controls.PageControl;
 import net.bitacademy.java41.services.TaskService;
 import net.bitacademy.java41.vo.Task;
 
+@Component("/task/taskupdatepost.do")
 public class TaskUpdatePostControl implements PageControl {
 	
 	TaskService taskService;

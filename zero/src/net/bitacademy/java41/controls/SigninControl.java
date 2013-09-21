@@ -1,15 +1,28 @@
 package net.bitacademy.java41.controls;
 
+import java.io.File;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.fileupload.FileItem;
+
+import net.bitacademy.java41.Annotations.Component;
 import net.bitacademy.java41.services.MemberService;
 import net.bitacademy.java41.vo.Member;
 
+@Component("/member/signin.do")
 public class SigninControl implements PageControl {
 	MemberService memberService;
-	
+	String rootRealPath;
+	long currTime = 0;
+	int count = 0;
+
+	public void setRootRealPath(String rootRealPath) {
+		this.rootRealPath = rootRealPath;
+		System.out.println(rootRealPath);
+	}
+
 	public SigninControl setMemberService(MemberService memberService) {
 		this.memberService = memberService;
 		return this;
@@ -18,24 +31,39 @@ public class SigninControl implements PageControl {
 	@Override
 	public String execute(Map<String, Object> model) throws Exception {
 		@SuppressWarnings("unchecked")
-		Map<String,String[]> params = 
-				(Map<String,String[]>)model.get("params");
-		
+		Map<String,Object> params = 
+		(Map<String,Object>)model.get("params");
+
+		FileItem photo = (FileItem)params.get("photo");
+		String filename = this.getNewFileName();
+		String path = rootRealPath + "file/" + filename;
+		photo.write(new File(path) );
+
 		Member member = new Member()
-						.setEmail(params.get("email")[0])
-						.setName(params.get("name")[0])
-						.setPassword(params.get("password")[0])
-						.setTel(params.get("tel")[0])
-						.setBlog(params.get("blog")[0])
-						.setDetailAddress(params.get("detailAddr")[0])
-						.setTag(params.get("tag")[0]);
-		
+		.setEmail((String)params.get("email"))
+		.setName((String)params.get("name"))
+		.setPassword((String)params.get("password"))
+		.setTel((String)params.get("tel"))
+		.setBlog((String)params.get("blog"))
+		.setDetailAddress((String)params.get("detailAddr"))
+		.setTag((String)params.get("tag"))
+		.setPhotos(new String[]{filename});
+
 		memberService.signUp(member);
-		
+
 		HttpSession session = (HttpSession)model.get("session");
 		session.setAttribute("member", member);
-		
+
 		return "redirect:../main.do";
+	}
+
+	synchronized private String getNewFileName() {
+		long millis = System.currentTimeMillis(); //1000
+		if (currTime != millis) {
+			currTime = millis;
+			count = 0;
+		}
+		return "member_" + millis + "_" + (++count);
 	}
 }
 
